@@ -11,16 +11,22 @@ const Contact = () => {
     const form = document.forms['contact_form']
     const reply_msg = document.getElementById("reply_msg")
 
-    fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-        .then(response => {
-            console.log('Success!', response)
-            reply_msg.innerHTML = "Message Sent Successfully"
-            setTimeout(function(){
-                reply_msg.innerHTML = ""
-            }, 5000)
-            form.reset()
-        })
-        .catch(error => console.error('Error!', error.message))
+    fetch(scriptURL, {
+        method: 'POST',
+        mode: 'cors', // Ensure CORS mode is enabled
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams(new FormData(form))
+      })
+      .then(response => response.text()) // Change to .text() because GAS returns HTML
+      .then(text => {
+          console.log('Success!', text);
+          reply_msg.innerHTML = "Message Sent Successfully";
+          setTimeout(() => { reply_msg.innerHTML = ""; }, 5000);
+          form.reset();
+      })
+      .catch(error => console.error('Error!', error.message));
   };
 
   return (
