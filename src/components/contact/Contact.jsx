@@ -13,20 +13,21 @@ const Contact = () => {
 
     fetch(scriptURL, {
         method: 'POST',
-        mode: 'cors', // Ensure CORS mode is enabled
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: new URLSearchParams(new FormData(form))
+        body: new URLSearchParams(new FormData(document.forms['contact_form'])),
+        mode: 'cors' // Ensure CORS mode is enabled
       })
-      .then(response => response.text()) // Change to .text() because GAS returns HTML
-      .then(text => {
-          console.log('Success!', text);
-          reply_msg.innerHTML = "Message Sent Successfully";
-          setTimeout(() => { reply_msg.innerHTML = ""; }, 5000);
-          form.reset();
+      .then(response => response.json()) // Make sure to parse JSON properly
+      .then(data => {
+          console.log('Success!', data);
+          document.getElementById("reply_msg").innerHTML = "Message Sent Successfully";
+          setTimeout(() => { document.getElementById("reply_msg").innerHTML = ""; }, 5000);
+          document.forms['contact_form'].reset();
       })
-      .catch(error => console.error('Error!', error.message));
+      .catch(error => console.error('Error!', error));
+      
   };
 
   return (
